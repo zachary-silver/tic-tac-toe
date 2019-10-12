@@ -28,6 +28,7 @@ void make_play(char board[ROWS][COLS], char team);
 
 int main(void)
 {
+    int temp;
     char input = 0, winner = 0,
          player1_team = 0, player2_team = 0, active_team = 0,
          board[ROWS][COLS] = {};
