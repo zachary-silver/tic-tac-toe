@@ -1,35 +1,30 @@
 #include <limits.h>
-#include <stdio.h>
 
 #include "tictactoe.h"
-#include "ui.h"
 
 typedef enum { Minimizer = -1, Tie = 0, Maximizer = 1 } Score;
 
-typedef Score (*MinMax)(const Score left, const Score right);
-typedef int (*MinMaxInt)(const int left, const int right);
+typedef int (*MinMax)(const int left, const int right);
 
-int max(int left, int right);
-int min(int left, int right);
-Score minimax(Game *game, Player player);
-Score maximizer(Player current, Player potential);
-Score minimizer(Player current, Player potential);
+int minimax(Game *game, Player player);
+Boolean diagonalWin(Game *game, Player player);
+Boolean increasingDiagonalWin(Game *game, Player player);
+Boolean decreasingDiagonalWin(Game *game, Player player);
 Boolean columnWin(Game *game, int column, Player player);
 Boolean rowWin(Game *game, int row, Player player);
-Boolean diagonalWin(Game *game, Player player);
 MinMax getMinMax(Player player);
-MinMaxInt getMinMaxInt(Player player);
 int getBestScore(Player player);
+int max(int left, int right);
+int min(int left, int right);
 
 void makePlay(Game *game, Player player)
 {
-    int row, column;
-    int currentScore, bestScore;
+    int row, column, currentScore, bestScore;
     Player nextPlayer;
-    MinMaxInt minMax;
+    MinMax minMax;
     Play play;
 
-    minMax = getMinMaxInt(player);
+    minMax = getMinMax(player);
     bestScore = getBestScore(player);
     nextPlayer = getNextPlayer(player);
 
@@ -51,12 +46,11 @@ void makePlay(Game *game, Player player)
     game->board[play.column][play.row] = player;
 }
 
-Score minimax(Game *game, Player player)
+int minimax(Game *game, Player player)
 {
-    int row, column;
+    int row, column, currentScore, bestScore;
     Player nextPlayer, winner;
-    int currentScore, bestScore;
-    MinMaxInt minMax;
+    MinMax minMax;
 
     if ((winner = findWinner(game)) != Neither) {
         return winner == X ? Maximizer : Minimizer;
@@ -64,7 +58,7 @@ Score minimax(Game *game, Player player)
         return Tie;
     }
 
-    minMax = getMinMaxInt(player);
+    minMax = getMinMax(player);
     bestScore = getBestScore(player);
     nextPlayer = getNextPlayer(player);
 
@@ -84,11 +78,8 @@ Score minimax(Game *game, Player player)
 
 Player findWinner(Game *game)
 {
-    int row, rows, column, columns;
+    int row, column;
     Player winner;
-
-    rows = game->rows;
-    columns = game->columns;
 
     for (row = 0; row < game->rows; row++) {
         winner = game->board[0][row];
@@ -104,7 +95,7 @@ Player findWinner(Game *game)
         }
     }
 
-    winner = game->board[columns / 2][rows / 2];
+    winner = game->board[game->columns / 2][game->rows / 2];
     return diagonalWin(game, winner) ? winner : Neither;
 }
 
@@ -144,36 +135,42 @@ Boolean columnWin(Game *game, int column, Player player)
 
 Boolean diagonalWin(Game *game, Player player)
 {
+    return decreasingDiagonalWin(game, player) ||
+           increasingDiagonalWin(game, player);
+}
+
+Boolean decreasingDiagonalWin(Game *game, Player player)
+{
     int row, column;
-    Boolean result;
 
     if (player == Neither) {
         return False;
     }
 
-    result = True;
-    /* Decreasing diagonal */
     for (row = 0, column = 0; row < game->rows; row++, column++) {
         if (game->board[column][row] != player) {
-            result = False;
-            break;
+            return False;
         }
     }
 
-    if (result == True) {
-        return True;
+    return True;
+}
+
+Boolean increasingDiagonalWin(Game *game, Player player)
+{
+    int row, column;
+
+    if (player == Neither) {
+        return False;
     }
 
-    result = True;
-    /* Increasing diagonal */
     for (row = game->rows - 1, column = 0; row >= 0; row--, column++) {
         if (game->board[column][row] != player) {
-            result = False;
-            break;
+            return False;
         }
     }
 
-    return result;
+    return True;
 }
 
 Boolean isTie(Game *game)
@@ -221,24 +218,9 @@ int min(int left, int right)
     return left < right ? left : right;
 }
 
-Score maximize(Score left, Score right)
-{
-    return left > right ? left : right;
-}
-
-Score minimize(Score left, Score right)
-{
-    return left < right ? left : right;
-}
-
 MinMax getMinMax(Player player)
 {
-    return player == X ? maximize : minimize;
-}
-
-MinMaxInt getMinMaxInt(Player player)
-{
-    return player == X ? maximize : minimize;
+    return player == X ? max : min;
 }
 
 Player getNextPlayer(Player player)
