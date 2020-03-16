@@ -1,16 +1,16 @@
 #include <limits.h>
+#include <stdio.h>
 
 #include "tictactoe.h"
+#include "ui.h"
 
 typedef enum { Minimizer = -1, Tie = 0, Maximizer = 1 } Score;
 
 typedef Score (*MinMax)(const Score left, const Score right);
+typedef int (*MinMaxInt)(const int left, const int right);
 
-typedef struct {
-    int row;
-    int column;
-} Play;
-
+int max(int left, int right);
+int min(int left, int right);
 Score minimax(Game *game, Player player);
 Score maximizer(Player current, Player potential);
 Score minimizer(Player current, Player potential);
@@ -18,17 +18,18 @@ Boolean columnWin(Game *game, int column, Player player);
 Boolean rowWin(Game *game, int row, Player player);
 Boolean diagonalWin(Game *game, Player player);
 MinMax getMinMax(Player player);
+MinMaxInt getMinMaxInt(Player player);
 int getBestScore(Player player);
 
 void makePlay(Game *game, Player player)
 {
     int row, column;
-    Score currentScore, bestScore;
+    int currentScore, bestScore;
     Player nextPlayer;
-    MinMax minMax;
+    MinMaxInt minMax;
     Play play;
 
-    minMax = getMinMax(player);
+    minMax = getMinMaxInt(player);
     bestScore = getBestScore(player);
     nextPlayer = getNextPlayer(player);
 
@@ -54,16 +55,16 @@ Score minimax(Game *game, Player player)
 {
     int row, column;
     Player nextPlayer, winner;
-    Score currentScore, bestScore;
-    MinMax minMax;
+    int currentScore, bestScore;
+    MinMaxInt minMax;
 
     if ((winner = findWinner(game)) != Neither) {
-        return winner == 'X' ? Maximizer : Minimizer;
+        return winner == X ? Maximizer : Minimizer;
     } else if (isTie(game)) {
         return Tie;
     }
 
-    minMax = getMinMax(player);
+    minMax = getMinMaxInt(player);
     bestScore = getBestScore(player);
     nextPlayer = getNextPlayer(player);
 
@@ -207,7 +208,17 @@ void resetBoard(Game *game)
  */
 int getBestScore(Player player)
 {
-    return player == 'X' ? INT_MIN : INT_MAX;
+    return player == X ? INT_MIN : INT_MAX;
+}
+
+int max(int left, int right)
+{
+    return left > right ? left : right;
+}
+
+int min(int left, int right)
+{
+    return left < right ? left : right;
 }
 
 Score maximize(Score left, Score right)
@@ -222,10 +233,15 @@ Score minimize(Score left, Score right)
 
 MinMax getMinMax(Player player)
 {
-    return player == 'X' ? maximize : minimize;
+    return player == X ? maximize : minimize;
+}
+
+MinMaxInt getMinMaxInt(Player player)
+{
+    return player == X ? maximize : minimize;
 }
 
 Player getNextPlayer(Player player)
 {
-    return player == One ? Two : One;
+    return player == X ? O : X;
 }
