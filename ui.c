@@ -24,9 +24,9 @@ int getContinue(void)
     char response = 0;
 
     do {
-        flushInput();
         printf("Would you like to continue playing? [Y/N]: ");
         scanf("%c", &response);
+        flushInput();
         response = tolower(response);
     } while (!validContinueResponse(response));
 
@@ -38,9 +38,9 @@ Player getPlayer(void)
     char player = 0;
 
     do {
-        flushInput();
         printf("What would you like to play as? [X/O]: ");
         scanf("%c", &player);
+        flushInput();
         player = toupper(player);
     } while(!validPlayer(player));
 
@@ -52,12 +52,12 @@ Play getPlay(Game *game)
     Play play;
 
     do {
-        flushInput();
         play.row = -1;
         play.column = -1;
         printf("Where would you would like to go? ");
         printf("[1-%d] [1-%d]: ", game->rows, game->columns);
         scanf("%d %d", &play.row, &play.column);
+        flushInput();
         play.row--;
         play.column--;
     } while (!validPlay(game, &play));
@@ -73,6 +73,7 @@ int getBoardSize(void)
         printf("How big do you want the game board to be? ");
         printf("[%d-%d]: ", MINSIZE, MAXSIZE);
         scanf("%d", &size);
+        flushInput();
     } while (!validBoardSize(size));
 
     return size;
@@ -128,11 +129,6 @@ void printSpaces(int spaces)
     }
 }
 
-int validBoardSize(int size)
-{
-    return size >= MINSIZE && size <= MAXSIZE;
-}
-
 int validPlay(Game *game, Play *play)
 {
     if (!validSpot(game, play->row, play->column)) {
@@ -152,6 +148,11 @@ int validSpot(Game *game, int row, int column)
 {
     return row < game->rows && row >= 0 &&
            column < game->columns && column >= 0;
+}
+
+int validBoardSize(int size)
+{
+    return size >= MINSIZE && size <= MAXSIZE;
 }
 
 int validPlayer(char player)
