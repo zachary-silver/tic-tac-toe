@@ -3,8 +3,6 @@
 
 #include "tictactoe.h"
 
-void initializeGame(Game *game, int rows, int columns);
-
-void cleanupGame(Game *game);
+void initializeGame(Game *game, int size);
 
 #endif

@@ -5,14 +5,11 @@
 #include "ui.h"
 
 #define SPACES 10
-#define MINSIZE 3
-#define MAXSIZE 9
 
 int validSpot(Game *game, int row, int column);
 int validContinueResponse(char response);
 int validPlay(Game *game, Play *play);
 int validPlayer(char player);
-int validBoardSize(int size);
 void printRow(Game *game, int row);
 void printSpaces(int spaces);
 void printLine(Game *game);
@@ -54,7 +51,7 @@ Play getPlay(Game *game)
     do {
         play.row = -1;
         play.column = -1;
-        printf("Where would you would like to go? ");
+        printf("Which row and column would you would like to go play? ");
         printf("[1-%d] [1-%d]: ", game->rows, game->columns);
         scanf("%d %d", &play.row, &play.column);
         flushInput();
@@ -63,20 +60,6 @@ Play getPlay(Game *game)
     } while (!validPlay(game, &play));
 
     return play;
-}
-
-int getBoardSize(void)
-{
-    int size;
-
-    do {
-        printf("How big do you want the game board to be? ");
-        printf("[%d-%d]: ", MINSIZE, MAXSIZE);
-        scanf("%d", &size);
-        flushInput();
-    } while (!validBoardSize(size));
-
-    return size;
 }
 
 void printScore(Game *game)
@@ -148,11 +131,6 @@ int validSpot(Game *game, int row, int column)
 {
     return row < game->rows && row >= 0 &&
            column < game->columns && column >= 0;
-}
-
-int validBoardSize(int size)
-{
-    return size >= MINSIZE && size <= MAXSIZE;
 }
 
 int validPlayer(char player)
