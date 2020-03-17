@@ -6,7 +6,7 @@
 
 #define SPACES 10
 #define MINSIZE 3
-#define MAXSIZE 3
+#define MAXSIZE 9
 
 int validSpot(Game *game, int row, int column);
 int validContinueResponse(char response);

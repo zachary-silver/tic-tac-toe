@@ -5,6 +5,12 @@ typedef enum { X = 'X', O = 'O', Neither = ' ' } Player;
 typedef enum { False = 0, True = 1 } Boolean;
 
 typedef struct {
+    unsigned XPositions;
+    unsigned OPositions;
+    signed char score;
+} BoardState;
+
+typedef struct {
     Player **board;
     int rows;
     int columns;
@@ -19,10 +25,11 @@ typedef struct {
     int column;
 } Play;
 
-void makePlay(Game *game, Player player);
+void play(Game *game);
 void resetBoard(Game *game);
 Player getNextPlayer(Player player);
 Player findWinner(Game *game);
 Boolean isTie(Game *game);
+BoardState getBoardState(Game *game);
 
 #endif
