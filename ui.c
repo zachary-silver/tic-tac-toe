@@ -13,7 +13,6 @@ int validPlayer(char player);
 void printRow(Game *game, int row);
 void printSpaces(int spaces);
 void printLine(Game *game);
-void handleInvalidSize(void);
 void flushInput(void);
 
 int getContinue(void)
