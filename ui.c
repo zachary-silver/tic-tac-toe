@@ -50,7 +50,7 @@ Play getPlay(Game *game)
     do {
         play.row = -1;
         play.column = -1;
-        printf("Which row and column would you would like to go play? ");
+        printf("Which row and column would you like to go? ");
         printf("[1-%d] [1-%d]: ", game->rows, game->columns);
         scanf("%d %d", &play.row, &play.column);
         flushInput();
