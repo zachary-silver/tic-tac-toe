@@ -4,6 +4,10 @@ An interactive Tic-Tac-Toe game, written in C and played through a terminal with
 ![](tic-tac-toe.gif)
 
 ## Installation
+(Must be running Linux)
+
+From inside the cloned Tic-Tac-Toe directory...
+
 Run the `make` command and then run `make clean` to get rid of object files.
 
 Finally, run the program by entering `./tictactoe`
